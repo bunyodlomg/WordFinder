@@ -1,51 +1,70 @@
 const answer = document.querySelector('h2'),
     input = document.querySelector('input'),
+    select = document.querySelector('select'),
     score = document.querySelector('span'),
     timer = document.querySelectorAll('span')[1],
     img = document.querySelector('img'),
     tik = document.querySelectorAll('audio')[0],
     success = document.querySelectorAll('audio')[1],
     gameOver = document.querySelectorAll('audio')[2],
-    i = document.querySelector('i');
+    play = document.querySelectorAll('i')[0],
+    again = document.querySelectorAll('i')[1];
+
 tik.load()
 success.load()
 gameOver.load()
 let w,
     scoreNum = 0,
-    time = 10
+    time = 10,
+    diff = 0
 function random() {
     let num = Math.floor(Math.random() * words.length + 1)
     let text = words[num]
     answer.textContent = text
     w = text
 }
+input.disabled = true
+
+select.addEventListener('click', () => {
+    diff = Number(select.value);
+    if (diff > 0) {
+        play.classList.remove('d-none')
+        input.disabled = false
+    }
+})
+
 random()
-myFunc()
+
 input.addEventListener('input', () => {
     if (input.value == w) {
         random()
         input.value = ''
         scoreNum++
         score.textContent = scoreNum
-        time += 6
+        time += diff
         success.play()
     }
 })
-console.log(time);
-i.addEventListener('click', () => {
-    i.classList.toggle('d-none')
+play.addEventListener('click', () => {
+    myFunc()
+    select.disabled = true;
+    play.classList.add('d-none')
+    input.focus()
+})
+again.addEventListener('click', () => {
+    select.disabled = false
+    again.classList.toggle('d-none')
     document.body.classList.toggle('bg-warning')
-    time = 10
     img.src = 'https://images.squarespace-cdn.com/content/v1/610118d718f2833505207c07/1628588663011-EUL7IJBBBUGG74R3CCWE/Wallace+at+Computer+Typing.gif'
     document.body.classList.toggle('bg-warning')
     document.body.classList.toggle('bg-danger')
     input.style.display = 'block'
     answer.style.display = 'block'
     time = 11
-    myFunc()
+    select.value = ''
+    input.value = ''
+    random()
 })
-
-
 
 function myFunc() {
     const myInterval = setInterval(() => {
@@ -62,6 +81,8 @@ function myFunc() {
             tik.pause()
         }
         if (time == 0) {
+            play.classList.add('d-none')
+            again.classList.toggle('d-none')
             document.body.classList.toggle('bg-danger')
             timer.classList.remove('shake-slow')
             tik.pause()
@@ -69,11 +90,10 @@ function myFunc() {
             answer.style.display = 'none'
             img.src = 'https://media4.giphy.com/media/fdGbhuUQpGQkkuuzIr/giphy.gif?cid=790b7611c12511d44b272607375f5b62becdadade0d84145&rid=giphy.gif&ct=ts'
             document.body.classList.toggle('bg-warning')
-            document.body.classList.toggle('bg-secondary')
-            i.classList.remove('d-none')
+            document.body.classList.toggle('bg-warning')
             gameOver.play()
             clearInterval(myInterval);
-            clearInterval();
+            input.disabled = true
         }
     }, 1000)
 }
