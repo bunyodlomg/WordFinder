@@ -16,7 +16,7 @@ gameOver.load()
 let w,
     scoreNum = 0,
     time = 10,
-    diff = 0
+    diff = 0;
 function random() {
     let num = Math.floor(Math.random() * words.length + 1)
     let text = words[num]
@@ -29,29 +29,30 @@ select.addEventListener('click', () => {
     diff = Number(select.value);
     if (diff > 0) {
         play.classList.remove('d-none')
-        input.disabled = false
     }
 })
 
 random()
 
 input.addEventListener('input', () => {
-    if (input.value == w) {
+    if (input.value.toLowerCase() == w) {
         random()
         input.value = ''
         scoreNum++
         score.textContent = scoreNum
-        time += diff
+        time += diff+1
         success.play()
     }
 })
 play.addEventListener('click', () => {
     myFunc()
+    input.disabled = false;
     select.disabled = true;
     play.classList.add('d-none')
     input.focus()
 })
 again.addEventListener('click', () => {
+    random()
     select.disabled = false
     again.classList.toggle('d-none')
     document.body.classList.toggle('bg-warning')
@@ -60,10 +61,12 @@ again.addEventListener('click', () => {
     document.body.classList.toggle('bg-danger')
     input.style.display = 'block'
     answer.style.display = 'block'
-    time = 11
-    select.value = ''
     input.value = ''
-    random()
+    time = 11
+    scoreNum = 0
+    score.textContent = scoreNum
+    timer.textContent = `00:${time - 1}`
+    play.classList.remove('d-none')
 })
 
 function myFunc() {
